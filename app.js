@@ -58,17 +58,18 @@ HTML atteso (adatta i tuoi id/class se diverso):
 - Messaggi UI (facoltativi):     #cartEmpty, #errorBox, #successBox
 */
 
+// --- Adattamento selettori per il tuo HTML ---
 const els = {
-  cartItems: document.getElementById('cartItems'),
-  subtotal: document.getElementById('subtotalValue'),
-  shipping: document.getElementById('shippingValue'),
-  total: document.getElementById('totalValue'),
+  cartItems: document.getElementById('cartList'),     // era #cartItems
+  totalDisplay: document.getElementById('grandTotal'),// aggiunto: totale unico in testata form
   orderForm: document.getElementById('orderForm'),
-  submitBtn: document.getElementById('submitOrder'),
-  cartEmpty: document.getElementById('cartEmpty'),
-  errorBox: document.getElementById('errorBox'),
-  successBox: document.getElementById('successBox'),
+  submitBtn: document.getElementById('submitBtn'),
+  formMsg: document.getElementById('formMsg'),
+  cartPanel: document.getElementById('cartPanel'),
+  cartBtn: document.getElementById('cartBtn'),
+  closeCart: document.getElementById('closeCart'),
 };
+
 
 /* =========================
    Carrello — logica
