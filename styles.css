@@ -1,5 +1,5 @@
 /* =========================
-   Tema chiaro / design tokens
+   Tema chiaro con pattern neutro
 ========================= */
 :root{
   --bg:#f5f7fb;
@@ -15,82 +15,148 @@
 html,body{height:100%}
 body{
   margin:0;
-  font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family:system-ui, sans-serif;
   color:var(--text);
-  background:var(--bg);
+  /* niente immagine sul body */
 }
 
-/* layer di compatibilità (rimane dietro) */
+/* overlay bianco semitrasparente sullo sfondo della pagina */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:rgba(255,255,255,0.0);
+  background:rgba(255,255,255,0.7);
   z-index:-1;
 }
 
 .container{max-width:1000px;margin:0 auto;padding:16px}
 
 /* =========================
-   TOPBAR con immagine
+   TOPBAR (immagine solo sull’header)
 ========================= */
 .topbar{
   position:relative;
   z-index:10;
   background-image:url("focacceria.jpg");
   background-repeat:no-repeat;
-  background-size:cover;
+  background-size:cover;           /* riempie sempre l’area */
   background-position:center 40%;
   color:#fff;
   text-shadow:1px 1px 4px rgba(0,0,0,.7);
   border-bottom:1px solid var(--border);
-  min-height:180px;
+  min-height:180px;                /* altezza minima hero */
   padding:20px 0;
 }
+
 .topbar__inner{
   position:relative;
   width:100%;
-  min-height:180px;
+  min-height:180px;                /* coerente con .topbar */
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:12px;
+  justify-content:center;          /* brand centrato */
   padding:0 16px;
 }
+
+/* brand centrato */
 .brand{
-  text-align:left;
+  text-align:center;
   display:flex;
   flex-direction:column;
-  align-items:flex-start;
+  align-items:center;
   gap:4px;
 }
 .brand__title{font-weight:800;font-size:20px;margin:0}
 .brand__subtitle{font-size:12px;color:#f1f5f9;margin:0}
+
+/* Banner minimo: trasparente, leggera ombra */
 #minOrderBanner{
   margin-top:.25rem;
   font-size:12px;
-  font-weight:600;
+  font-weight:500;
   color:#fff;
-  background:transparent;
-  border:none;
+  background:transparent !important;
+  border:none !important;
   text-shadow:0 1px 2px rgba(0,0,0,.45);
 }
 
-/* =========================
-   Sezioni / barra titolo
-========================= */
+/* ===== Barra titolo sezione + carrello a destra ===== */
 .section__bar{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:space-between;   /* spinge il bottone a destra */
   gap:12px;
   margin:12px 0 10px;
 }
+.section__bar .section__title{margin:0}
+
+/* ===== Bottone carrello (chiaro, leggibile ovunque) ===== */
+#cartBtn{
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:8px 12px;
+  border-radius:10px;
+  line-height:1;
+}
+#cartBtn .badge{
+  background:var(--primary);
+  color:#fff;
+  padding:2px 6px;
+  border-radius:999px;
+  font-size:12px;
+  margin-left:6px;
+}
+
+/* (rimosso: .controls non più usato) */
+
+/* =========================
+   Titoli sezioni / categorie
+========================= */
 .section__title{font-size:20px;margin:16px 0 8px}
 .section__title--center{text-align:center;margin:12px 0 10px}
 
 /* =========================
-   Bottoni / badge
+   Sezioni categoria
+========================= */
+.category-section{display:block;margin:20px 0}
+
+/* Contenitore prodotti: blocco lineare, non griglia */
+#productGrid, .product-grid, .products{display:block}
+
+/* =========================
+   CARD PRODOTTO — UNA PER RIGA
+========================= */
+.grid{display:block}
+.grid > .card{margin-bottom:12px}
+
+.card{
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px; gap:12px; box-shadow:none;
+}
+
+.card__header{
+  all:unset;
+  display:block;
+  cursor:pointer;
+  flex:1 1 auto;
+}
+
+.card__meta{display:flex;flex-direction:column;gap:6px}
+.card__title{font-weight:800;font-size:18px;margin:0;line-height:1.15;}
+.card__price{font-weight:700;font-size:16px;margin:0;}
+.card__desc{
+  margin:0;color:var(--muted);font-size:14px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+
+.card__actions{flex:0 0 auto;display:flex;align-items:center;gap:8px}
+
+/* =========================
+   Bottoni
 ========================= */
 .btn{
   background:var(--primary);
@@ -100,210 +166,83 @@ body::before{
   padding:8px 10px;
   font-weight:600;
   cursor:pointer;
-  line-height:1.1;
 }
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn--ghost{background:#fff;color:var(--text);border:1px solid var(--border)}
 .btn--circle{width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:22px;padding:0}
 
-.badge{
-  display:inline-block;
-  background:var(--primary);
-  color:#fff;
-  padding:2px 6px;
-  border-radius:999px;
-  font-size:12px;
-  margin-left:6px;
-}
+/* qty inline */
+.qty-inline{display:flex;align-items:center;gap:8px}
+.qty-inline .btn{padding:6px 10px}
+.qty-inline .count{min-width:22px;text-align:center;font-weight:700}
 
 /* =========================
-   Griglia prodotti (una card per riga)
-========================= */
-.grid{display:block}
-.grid > .card{margin-bottom:12px}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px;
-  gap:12px;
-  box-shadow:0 2px 10px rgba(16,24,40,.04);
-}
-.card__body{flex:1 1 auto;min-width:0}
-.card__title{font-weight:800;font-size:18px;margin:0;line-height:1.15;}
-.card__desc{
-  margin:.35rem 0 0;
-  color:var(--muted);
-  font-size:14px;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-.card__footer{flex:0 0 auto;display:flex;align-items:center;gap:10px}
-.card__price{font-weight:700;font-size:16px;margin:0}
-
-/* =========================
-   Form ordine
+   FORM ORDINE
 ========================= */
 .order .form{
-  background:var(--card);
+  background:transparent;
   border:1px solid var(--border);
   border-radius:14px;
   padding:12px;
 }
 .form__row{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 .form__row--checkbox{flex-direction:row;align-items:center;gap:8px}
-.form__footer{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-  margin-top:8px;
-  flex-wrap:wrap
-}
-.form__msg{
-  margin-top:8px;
-  min-height:1.2em;
-  font-size:14px;
-}
-.form__msg--err{color:#d93025}
-.form__msg--ok{color:#0a7d24}
-.total{font-weight:700}
-input,select{
-  background:#fff;
-  color:var(--text);
-  border:1px solid var(--border);
-  padding:10px;
-  border-radius:8px;
-}
+.form__footer{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-top:8px;flex-wrap:wrap}
+.form__totals{display:flex;flex-direction:column;gap:6px}
+.form__line{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
+.form__line strong{color:var(--text)}
+.form__msg{margin-top:8px;color:#d93025;min-height:1.2em}
+input,select{background:#fff;color:var(--text);border:1px solid var(--border);padding:10px;border-radius:8px}
 
 /* =========================
-   Carrello (overlay box)
+   CARRELLO
 ========================= */
 .cart{
-  position:fixed;
-  right:16px;
-  bottom:16px;
-  z-index:9;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  width:min(380px,92vw);
-  max-height:70vh;
-  display:none;
-  flex-direction:column;
-  box-shadow:0 12px 30px rgba(16,24,40,.12);
+  position:fixed;right:16px;bottom:16px;z-index:9;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;width:min(380px,92vw);max-height:70vh;display:none;flex-direction:column
 }
 .cart[aria-hidden="false"]{display:flex}
-.cart__header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 12px;
-  border-bottom:1px solid var(--border)
-}
+.cart__header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border)}
 .cart__title{margin:0}
-.cart__list{
-  padding:8px 12px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  overflow:auto
-}
-
-/* Righe carrello (allineate al JS: .cart-row, .cart-row__main, .cart-row__actions) */
-.cart-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:8px;
-  background:#fff;
-}
-.cart-row__main{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-.cart-row__actions{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.qty-btn, .remove-btn{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:6px 10px;
-  cursor:pointer;
-}
-.qty{display:inline-block;min-width:20px;text-align:center}
+.cart__list{padding:8px 12px;display:flex;flex-direction:column;gap:8px;overflow:auto}
+.cart__item{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:8px}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:28px;height:28px;border-radius:8px}
+.item__meta{display:flex;flex-direction:column}
+.item__name{font-weight:700}
+.item__price{color:var(--muted);font-size:12px}
 
 /* =========================
-   Modal (per future varianti/dettagli)
+   MODALE DETTAGLIO
 ========================= */
 .modal{position:fixed;inset:0;display:none;place-items:center;z-index:20}
 .modal[aria-hidden="false"]{display:grid}
 .modal__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}
-.modal__dialog{
-  position:relative;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  max-width:520px;
-  width:92vw;
-  padding:12px;
-  z-index:1;
-  box-shadow:0 16px 40px rgba(16,24,40,.16);
-}
+.modal__dialog{position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;max-width:520px;width:92vw;padding:12px;z-index:1}
 .modal__header{display:flex;align-items:center;justify-content:space-between}
 .modal__title{margin:0}
 .modal__body{margin:8px 0;color:var(--muted)}
 .modal__footer{display:flex;align-items:center;justify-content:space-between}
-.modal__price{font-weight:800}
 
 /* =========================
-   Toast (allineato al JS: .toast--show)
+   TOAST
 ========================= */
-.toast{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#fff;
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px 14px;
-  display:none;
-  z-index:30;
-  box-shadow:0 8px 24px rgba(16,24,40,.08)
-}
-.toast--show{display:block}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:none;z-index:30;box-shadow:0 8px 24px rgba(16,24,40,.08)}
+.toast.show{display:block}
 
 /* =========================
-   Utilità
+   Accessibilità
 ========================= */
-.muted{color:var(--muted)}
-.sr-only{
-  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
-  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
-}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 /* =========================
-   Responsive
+   Responsive tweaks
 ========================= */
-@media (max-width:600px){
+@media (max-width:480px){
   .topbar{min-height:160px}
-  .topbar__inner{min-height:160px;flex-direction:column;align-items:flex-start}
+  .topbar__inner{min-height:160px}
   #cartBtn{padding:6px 10px;font-size:14px}
-  .cart{right:8px;left:8px;width:auto}
 }
 @media (min-width:768px){
   .card__title{font-size:20px}
@@ -311,8 +250,11 @@ input,select{
   .card__desc{-webkit-line-clamp:2}
 }
 
+/* (nessuna patch extra: il banner minimo è sopra) */
+
+
 /* =========================
-   Order Summary (se lo usi in futuro)
+   Order Summary (bottom)
 ========================= */
 .order-summary{
   flex:1 1 60%;
@@ -336,6 +278,7 @@ input,select{
   .order-summary{flex:1 1 100%}
 }
 
+
 /* =========================
    Privacy text
 ========================= */
@@ -345,3 +288,4 @@ input,select{
   margin:6px 0 0;
   line-height:1.4;
 }
+
