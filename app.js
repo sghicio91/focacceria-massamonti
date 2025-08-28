@@ -3,25 +3,34 @@
 ========================= */
 
 // URL della tua Web App Apps Script (endpoint doPost)
-const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/XXXXXXXXXXXX/exec';
+const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/XXXXXXX/exec';
 
 // Impostazioni economiche
-const SHIPPING_FIXED = 5.00;         // spedizione fissa (adatta se necessario)
-const MIN_ORDER_NO_SHIP = 20.00;     // ordine minimo ESCLUDENDO la spedizione
+const SHIPPING_FIXED = 5.00;       // spedizione fissa
+const MIN_ORDER_NO_SHIP = 20.00;   // ordine minimo (esclusa spedizione)
+
+/* =========================
+   Dati demo (menù)
+   -> se già generi il menu via HTML, puoi rimuovere questo blocco e popolare #productGrid dal server o a mano
+========================= */
+const MENU = [
+  { id: 'focaccia-classica', name: 'Focaccia Clásica', price: 7.50, desc: 'Aceite de oliva, romero y sal.' },
+  { id: 'focaccia-mortadella', name: 'Focaccia con Mortadela', price: 9.00, desc: 'Mortadela italiana y pistacho.' },
+  { id: 'focaccia-tomate', name: 'Focaccia con Tomate', price: 8.50, desc: 'Tomate fresco y albahaca.' },
+];
 
 /* =========================
    Utilità
 ========================= */
 
-// Formatta in euro
 function euro(n) {
   const v = Number(n || 0);
-  return '€ ' + v.toFixed(2).replace('.', ',');
+  return '€' + v.toFixed(2).replace('.', ',');
 }
 
-// Normalizza il telefono per WhatsApp/Sheet
-// - accetta + e cifre
-// - rimuove + e 00 iniziali, restituisce solo cifre (con eventuale prefisso paese)
+// Normalizza telefono per WhatsApp/Sheet:
+// - consente + e cifre in input
+// - rimuove + e 00 iniziali -> ritorna solo cifre
 function normalizePhone(input) {
   let d = String(input || '').trim();
   d = d.replace(/[^\d+]/g, '');   // tiene solo cifre e +
@@ -30,14 +39,13 @@ function normalizePhone(input) {
   return d.replace(/\D/g, '');
 }
 
-// Serializza gli articoli carrello in una stringa leggibile per il foglio
 function itemsToString(items) {
-  // "2x Focaccia Classica (7.50) | 1x Focaccia Mortadella (9.00)"
+  // Formato leggibile per il foglio: "2x Focaccia (7.50) | 1x ... "
   return items.map(it => `${it.qty}x ${it.name} (${Number(it.price).toFixed(2)})`).join(' | ');
 }
 
 /* =========================
-   Stato applicazione
+   Stato
 ========================= */
 
 const state = {
@@ -45,31 +53,64 @@ const state = {
 };
 
 /* =========================
-   Selettori DOM attesi
+   Selettori DOM (allineati al tuo HTML)
 ========================= */
-/*
-HTML atteso (adatta i tuoi id/class se diverso):
-- Bottoni "Aggiungi al carrello": .add-to-cart con data-id, data-name, data-price
-- Contenitore lista carrello:    #cartItems
-- Totali:                        #subtotalValue, #shippingValue, #totalValue
-- Form ordine:                   #orderForm
-- Bottone invio:                 #submitOrder
-- Campi form:                    name="name" | name="address" | name="phone" | name="payment"
-- Messaggi UI (facoltativi):     #cartEmpty, #errorBox, #successBox
-*/
 
-// --- Adattamento selettori per il tuo HTML ---
 const els = {
-  cartItems: document.getElementById('cartList'),     // era #cartItems
-  totalDisplay: document.getElementById('grandTotal'),// aggiunto: totale unico in testata form
+  productGrid: document.getElementById('productGrid'),
+  cartBtn: document.getElementById('cartBtn'),
+  cartCount: document.getElementById('cartCount'),
+  cartPanel: document.getElementById('cartPanel'),
+  closeCart: document.getElementById('closeCart'),
+  cartItems: document.getElementById('cartList'),
   orderForm: document.getElementById('orderForm'),
   submitBtn: document.getElementById('submitBtn'),
   formMsg: document.getElementById('formMsg'),
-  cartPanel: document.getElementById('cartPanel'),
-  cartBtn: document.getElementById('cartBtn'),
-  closeCart: document.getElementById('closeCart'),
+  totalDisplay: document.getElementById('grandTotal'),
+  modal: document.getElementById('modal'),
+  modalBackdrop: document.getElementById('modalBackdrop'),
+  modalClose: document.getElementById('modalClose'),
+  modalTitle: document.getElementById('modalTitle'),
+  modalBody: document.getElementById('modalBody'),
+  modalPrice: document.getElementById('modalPrice'),
+  modalAdd: document.getElementById('modalAdd'),
+  toast: document.getElementById('toast'),
 };
 
+/* =========================
+   Menù: render base
+========================= */
+
+function renderMenu() {
+  if (!els.productGrid) return;
+  els.productGrid.innerHTML = '';
+  MENU.forEach(p => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card__body">
+        <h3 class="card__title">${p.name}</h3>
+        <p class="card__desc">${p.desc || ''}</p>
+      </div>
+      <div class="card__footer">
+        <span class="card__price">${euro(p.price)}</span>
+        <button class="btn add-to-cart" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">Añadir</button>
+      </div>
+    `;
+    els.productGrid.appendChild(card);
+  });
+
+  // wire bottoni "Añadir"
+  els.productGrid.querySelectorAll('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const name = btn.getAttribute('data-name');
+      const price = Number(btn.getAttribute('data-price'));
+      addToCart({ id, name, price });
+      toast(`Añadido: ${name}`);
+    });
+  });
+}
 
 /* =========================
    Carrello — logica
@@ -102,8 +143,10 @@ function changeQty(id, delta) {
 function removeItem(id) {
   const idx = findItemIndex(id);
   if (idx === -1) return;
+  const name = state.cart[idx].name;
   state.cart.splice(idx, 1);
   renderCart();
+  toast(`Eliminado: ${name}`);
 }
 
 function calcSubtotal() {
@@ -111,7 +154,6 @@ function calcSubtotal() {
 }
 
 function calcShipping(subtotal) {
-  // Se vuoi logiche per zona, sostituisci qui.
   return state.cart.length > 0 ? SHIPPING_FIXED : 0;
 }
 
@@ -122,54 +164,47 @@ function calcTotal() {
 }
 
 /* =========================
-   Carrello — render
+   Carrello — render UI
 ========================= */
 
 function renderCart() {
-  // Nascondi/mostra messaggio carrello vuoto
-  if (els.cartEmpty) {
-    els.cartEmpty.style.display = state.cart.length ? 'none' : '';
+  // badge conteggio
+  if (els.cartCount) {
+    const count = state.cart.reduce((n, it) => n + it.qty, 0);
+    els.cartCount.textContent = String(count);
   }
 
-  // Pulisci contenitore
   if (!els.cartItems) return;
   els.cartItems.innerHTML = '';
 
   if (state.cart.length === 0) {
-    if (els.subtotal) els.subtotal.textContent = euro(0);
-    if (els.shipping) els.shipping.textContent = euro(0);
-    if (els.total) els.total.textContent = euro(0);
-    return;
+    els.cartItems.innerHTML = `<p class="muted">El carrito está vacío</p>`;
+  } else {
+    state.cart.forEach(it => {
+      const row = document.createElement('div');
+      row.className = 'cart-row';
+      row.innerHTML = `
+        <div class="cart-row__main">
+          <strong>${it.name}</strong>
+          <span class="muted">${euro(it.price)} × ${it.qty}</span>
+        </div>
+        <div class="cart-row__actions">
+          <button type="button" class="qty-btn" data-act="dec" data-id="${it.id}">−</button>
+          <span class="qty">${it.qty}</span>
+          <button type="button" class="qty-btn" data-act="inc" data-id="${it.id}">+</button>
+          <button type="button" class="remove-btn" data-id="${it.id}">✕</button>
+        </div>
+      `;
+      els.cartItems.appendChild(row);
+    });
   }
 
-  // Crea righe
-  state.cart.forEach(it => {
-    const row = document.createElement('div');
-    row.className = 'cart-row';
-    row.innerHTML = `
-      <div class="cart-row-main">
-        <strong>${it.name}</strong>
-        <span>${euro(it.price)} x ${it.qty}</span>
-      </div>
-      <div class="cart-row-actions">
-        <button type="button" class="qty-btn" data-act="dec" data-id="${it.id}">−</button>
-        <span class="qty">${it.qty}</span>
-        <button type="button" class="qty-btn" data-act="inc" data-id="${it.id}">+</button>
-        <button type="button" class="remove-btn" data-id="${it.id}">✕</button>
-      </div>
-    `;
-    els.cartItems.appendChild(row);
-  });
+  // totale grande nel form
+  renderTotalsOnly();
 
-  // Totali
-  const { subtotal, shipping, total } = calcTotal();
-  if (els.subtotal) els.subtotal.textContent = euro(subtotal);
-  if (els.shipping) els.shipping.textContent = euro(shipping);
-  if (els.total) els.total.textContent = euro(total);
-
-  // Wire azioni righe
+  // wire azioni righe
   els.cartItems.querySelectorAll('.qty-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
       const act = btn.getAttribute('data-act');
       changeQty(id, act === 'inc' ? 1 : -1);
@@ -178,64 +213,85 @@ function renderCart() {
   els.cartItems.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', () => removeItem(btn.getAttribute('data-id')));
   });
+
+  updateSubmitState();
+}
+
+function renderTotalsOnly() {
+  const { total } = calcTotal();
+  if (els.totalDisplay) els.totalDisplay.textContent = euro(total);
 }
 
 /* =========================
-   UI — messaggi
+   UI: pannello carrello / modal / toast
 ========================= */
 
-function showError(msg) {
-  if (els.errorBox) {
-    els.errorBox.textContent = msg;
-    els.errorBox.style.display = '';
-  } else {
-    alert(msg);
-  }
+function openCart() {
+  if (!els.cartPanel) return;
+  els.cartPanel.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
 }
-
-function clearError() {
-  if (els.errorBox) els.errorBox.style.display = 'none';
+function closeCart() {
+  if (!els.cartPanel) return;
+  els.cartPanel.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
 }
+els.cartBtn?.addEventListener('click', openCart);
+els.closeCart?.addEventListener('click', closeCart);
 
-function showSuccess(msg) {
-  if (els.successBox) {
-    els.successBox.textContent = msg;
-    els.successBox.style.display = '';
-  } else {
-    alert(msg);
-  }
-}
-
-function clearSuccess() {
-  if (els.successBox) els.successBox.style.display = 'none';
+// Toast semplice
+let toastTimer = null;
+function toast(text = '', ms = 1400) {
+  if (!els.toast) return;
+  els.toast.textContent = text;
+  els.toast.classList.add('toast--show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => els.toast.classList.remove('toast--show'), ms);
 }
 
 /* =========================
-   Invio ordine
+   Messaggi form centralizzati
 ========================= */
 
-async function submitOrder(payload) {
-  const res = await fetch(GAS_WEB_APP_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-      // Se la tua web app Apps Script richiede CORS, abilitalo lato server
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Errore ${res.status}: ${text || 'invio non riuscito'}`);
-  }
-  return res.json().catch(() => ({}));
+function setFormMsg(text, type = '') {
+  if (!els.formMsg) return;
+  els.formMsg.textContent = text || '';
+  els.formMsg.className = 'form__msg' + (type ? ` form__msg--${type}` : '');
 }
+
+/* =========================
+   Abilitazione invio (regole reali)
+========================= */
+
+function canSubmit(form) {
+  const { subtotal } = calcTotal();
+  const hasCart = state.cart && state.cart.length > 0;
+  const minOk = subtotal >= MIN_ORDER_NO_SHIP;
+
+  const nameOk = !!form.name.value.trim();
+  const addrOk = !!form.address.value.trim();
+  const phoneOk = normalizePhone(form.phone.value).length >= 7;
+  const payOk = !!form.payment.value;
+  const privacyOk = document.getElementById('privacy')?.checked;
+
+  return hasCart && minOk && nameOk && addrOk && phoneOk && payOk && privacyOk;
+}
+
+function updateSubmitState() {
+  if (!els.orderForm || !els.submitBtn) return;
+  els.submitBtn.disabled = !canSubmit(els.orderForm);
+}
+
+/* =========================
+   Invio ordine → Apps Script
+========================= */
 
 function buildPayloadFromForm(form) {
   const { subtotal, shipping, total } = calcTotal();
 
   return {
-    // colonne del Google Sheet
+    // colonne del Google Sheet:
+    // timestamp (lo genera Apps Script o il foglio),
     items: itemsToString(state.cart),
     subtotal: Number(subtotal.toFixed(2)),
     shipping: Number(shipping.toFixed(2)),
@@ -243,100 +299,70 @@ function buildPayloadFromForm(form) {
     name: form.name.value.trim(),
     address: form.address.value.trim(),
     phone: normalizePhone(form.phone.value),
-    payment: form.payment.value,     // es: 'contanti' | 'bancomat'
-    status: 'nuovo',                 // opzionale
-    notify_whatsapp: ''              // lascia vuoto: lo popola il foglio/Apps Script
+    payment: form.payment.value,
+    status: 'nuevo',
+    notify_whatsapp: '' // lasciamo vuoto: lo popola Apps Script o formula del foglio
   };
 }
 
-/* =========================
-   Validazioni
-========================= */
-
-function validateBeforeSend(form) {
-  clearError();
-
-  if (state.cart.length === 0) {
-    showError('Il carrello è vuoto.');
-    return false;
-  }
-
-  const { subtotal } = calcTotal();
-  if (subtotal < MIN_ORDER_NO_SHIP) {
-    showError(`Ordine minimo ${euro(MIN_ORDER_NO_SHIP)} (esclusa spedizione).`);
-    return false;
-  }
-
-  if (!form.name.value.trim()) {
-    showError('Inserisci il nome.');
-    return false;
-  }
-  if (!form.address.value.trim()) {
-    showError('Inserisci l’indirizzo.');
-    return false;
-  }
-  const phone = normalizePhone(form.phone.value);
-  if (!phone || phone.length < 7) {
-    showError('Inserisci un numero di telefono valido.');
-    return false;
-  }
-  if (!form.payment.value) {
-    showError('Seleziona il metodo di pagamento.');
-    return false;
-  }
-
-  return true;
-}
-
-/* =========================
-   Event wiring
-========================= */
-
-function wireAddToCartButtons() {
-  // Bottoni prodotti: .add-to-cart con data-*
-  document.querySelectorAll('.add-to-cart').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-id');
-      const name = btn.getAttribute('data-name');
-      const price = btn.getAttribute('data-price');
-      if (!id || !name || !price) {
-        showError('Prodotto non configurato correttamente.');
-        return;
-      }
-      addToCart({ id, name, price });
-    });
+async function submitOrder(payload) {
+  const res = await fetch(GAS_WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
   });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Error ${res.status}: ${text || 'fallo de envío'}`);
+  }
+  // Se la tua web app risponde con JSON
+  return res.json().catch(() => ({}));
 }
+
+/* =========================
+   Gestione form
+========================= */
 
 function wireOrderForm() {
   if (!els.orderForm) return;
 
+  // Abilita/disabilita submit in tempo reale
+  ['input', 'change', 'keyup'].forEach(ev => {
+    els.orderForm.addEventListener(ev, updateSubmitState, true);
+  });
+
   els.orderForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    clearError();
-    clearSuccess();
+    setFormMsg('', '');
 
-    if (!validateBeforeSend(els.orderForm)) return;
+    if (!canSubmit(els.orderForm)) {
+      setFormMsg('Completa los datos y cumple el pedido mínimo (20 € sin envío).', 'err');
+      return;
+    }
 
-    // Disabilita bottone durante l’invio
+    // blocca doppio invio
     if (els.submitBtn) els.submitBtn.disabled = true;
 
     try {
       const payload = buildPayloadFromForm(els.orderForm);
-      const response = await submitOrder(payload);
+      await submitOrder(payload);
 
-      // Successo
-      showSuccess('Ordine inviato! La conferma WhatsApp verrà generata nel foglio.');
+      setFormMsg('¡Pedido enviado! La confirmación por WhatsApp se generará en el Sheet.', 'ok');
+
       // reset carrello + form
       state.cart = [];
       renderCart();
       els.orderForm.reset();
+      updateSubmitState();
+
+      // chiudi carrello se aperto
+      closeCart();
 
     } catch (err) {
       console.error(err);
-      showError('Invio non riuscito. Riprova tra poco.');
+      setFormMsg('No se pudo enviar el pedido. Inténtalo de nuevo en unos segundos.', 'err');
     } finally {
-      if (els.submitBtn) els.submitBtn.disabled = false;
+      if (els.submitBtn) els.submitBtn.disabled = !canSubmit(els.orderForm);
     }
   });
 }
@@ -346,11 +372,10 @@ function wireOrderForm() {
 ========================= */
 
 function init() {
-  clearError();
-  clearSuccess();
-  wireAddToCartButtons();
+  renderMenu();
+  renderCart();
   wireOrderForm();
-  renderCart(); // inizializza UI
+  updateSubmitState();
 }
 
 document.addEventListener('DOMContentLoaded', init);
