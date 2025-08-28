@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Focacceria Massamonti (Calle Suárez Guerra 47)</title>
   <link rel="stylesheet" href="styles.css">
-  <meta name="theme-color" content="#ffffff">
 </head>
 <body>
 
-  <!-- Topbar -->
+  
   <header class="topbar">
     <div class="container topbar__inner">
       <div class="brand">
@@ -23,44 +22,42 @@
           Pedido mínimo 20 € (sin envío)
         </div>
       </div>
-
-      <button id="cartBtn" class="btn btn--ghost">
-        🛒 <span data-i18n="cart">Carrito</span>
-        <span id="cartCount" class="badge" aria-live="polite">0</span>
-      </button>
     </div>
   </header>
 
   <main class="container">
-    <!-- Menú -->
-    <section class="menu">
-      <div class="section__bar">
-        <h2 class="section__title" data-i18n="menu">Nuestro Menú</h2>
-      </div>
-      <!-- verrà popolato da JS -->
-      <div id="productGrid" class="grid"></div>
-    </section>
 
-    <!-- Datos del Cliente / Orden -->
+    
+    <section class="menu">
+  <div class="section__bar">
+    <h2 class="section__title" data-i18n="menu">Nuestro Menú</h2>
+
+    <button id="cartBtn" class="btn btn--ghost">
+      🛒 <span data-i18n="cart"></span>
+      <span id="cartCount" class="badge" aria-live="polite">0</span>
+    </button>
+  </div>
+
+  <div id="productGrid" class="grid"></div>
+</section>
+
+
+    
     <section class="order">
       <h2 class="section__title" data-i18n="customerData">Datos del Cliente</h2>
-
-      <form id="orderForm" class="form" novalidate>
+      <form id="orderForm" class="form">
         <div class="form__row">
           <label for="name" data-i18n="name">Nombre</label>
-          <input id="name" name="name" autocomplete="name" required>
+          <input id="name" name="name" required>
         </div>
-
         <div class="form__row">
           <label for="address" data-i18n="address">Dirección</label>
-          <input id="address" name="address" autocomplete="street-address" required>
+          <input id="address" name="address" required>
         </div>
-
         <div class="form__row">
           <label for="phone" data-i18n="phone">Teléfono</label>
-          <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required>
+          <input id="phone" name="phone" type="tel" required>
         </div>
-
         <div class="form__row">
           <label for="payment" data-i18n="paymentMethod">Método de pago</label>
           <select id="payment" name="payment" required>
@@ -69,19 +66,17 @@
             <option value="card" data-i18n="card">Tarjeta</option>
           </select>
         </div>
-
-        <div class="form__row form__row--checkbox">
-          <input id="privacy" type="checkbox" required>
-          <label for="privacy" data-i18n="privacyPolicy">Acepto la política de privacidad</label>
-        </div>
-
-        <p class="privacy-text">
-          De conformidad con lo establecido en el Reglamento (UE) 2016/679 (RGPD) y en la Ley Orgánica 3/2018,
-          le informamos que los datos personales que nos facilite serán tratados únicamente con la finalidad de
-          gestionar su pedido y la entrega a domicilio. Sus datos no se cederán a terceros, salvo obligación legal.
-          Puede ejercer sus derechos de acceso, rectificación, supresión y demás derechos enviando una solicitud a
-          <a href="mailto:tuemail@ejemplo.com">tuemail@ejemplo.com</a>.
-        </p>
+       <div class="form__row form__row--checkbox">
+  <input id="privacy" type="checkbox" required>
+  <label for="privacy" data-i18n="privacyPolicy">Acepto la política de privacidad</label>
+</div>
+<p class="privacy-text">
+  De conformidad con lo establecido en el Reglamento (UE) 2016/679 (RGPD) y en la Ley Orgánica 3/2018, 
+  le informamos que los datos personales que nos facilite serán tratados únicamente con la finalidad de 
+  gestionar su pedido y la entrega a domicilio. Sus datos no se cederán a terceros, salvo obligación legal.  
+  Puede ejercer sus derechos de acceso, rectificación, supresión y demás derechos enviando una solicitud a 
+  <a href="mailto:tuemail@ejemplo.com">tuemail@ejemplo.com</a>.
+</p>
 
         <div class="form__footer">
           <div class="total">
@@ -92,13 +87,12 @@
             <span data-i18n="sendOrder">Enviar pedido</span>
           </button>
         </div>
-
         <p id="formMsg" class="form__msg" role="alert" aria-live="polite"></p>
       </form>
     </section>
   </main>
 
-  <!-- Carrito (Panel/Overlay) -->
+  
   <aside id="cartPanel" class="cart" aria-hidden="true">
     <div class="cart__header">
       <h3 class="cart__title" data-i18n="cart">Carrito</h3>
@@ -107,7 +101,7 @@
     <div id="cartList" class="cart__list"></div>
   </aside>
 
-  <!-- Modal prodotto (riuso per varianti, descrizioni, ecc.) -->
+  
   <div id="modal" class="modal" aria-hidden="true">
     <div class="modal__backdrop" id="modalBackdrop"></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -125,9 +119,9 @@
     </div>
   </div>
 
-  <!-- Toast -->
+  
   <div id="toast" class="toast" aria-live="polite"></div>
 
-  <script src="app.js" defer></script>
+  <script src="app.js"></script>
 </body>
 </html>
