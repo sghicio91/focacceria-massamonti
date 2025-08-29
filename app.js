@@ -6,7 +6,7 @@
 const MIN_ORDER = 20;        // minimo ordine (esclusa spedizione)
 const SHIPPING_COST = 5;     // costo spedizione
 // URL del Web App di Google Apps Script (deployment con accesso "Anyone")
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwFZYRz-v3BS0CvT8FseE9CRHpD5hzeDWba1cH3KuSxtxk2i6N4RM5fbe_m_qJd_24I/exec';
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzTfFn5oZYLzr5w-TUrh0xVkVBg7zAKG_ZgiiirPvgWgCklCslW-yJM3kAC4K9ePkcC/exec';
 
 /* =========================
    Traduzioni UI (ES/IT/EN)
