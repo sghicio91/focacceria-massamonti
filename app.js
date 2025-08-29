@@ -690,9 +690,10 @@ function renderCart(){
   enforceMinOrder(subtotal);
 
   // Riepilogo in fondo al form (prima di Subtotal)
-  if (orderSummary){
+  const summary = orderSummary;
+  if (summary){
     if (state.cart.length === 0){
-      orderSummary.innerHTML = '';
+      summary.innerHTML = '';
     } else {
       const frag = document.createDocumentFragment();
       state.cart.forEach(item => {
@@ -707,8 +708,8 @@ function renderCart(){
         row.append(name, price);
         frag.appendChild(row);
       });
-      orderSummary.innerHTML = '';
-      orderSummary.appendChild(frag);
+      summary.innerHTML = '';
+      summary.appendChild(frag);
     }
   }
 }
@@ -893,9 +894,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =========================
+   INVIO ORDINE — HOTFIX CORS
+========================= */
+
+// invia la POST in modalità no-cors e non legge la risposta
+async function submitOrder(payload){
+  // Evita header personalizzati per non innescare preflight
+  await fetch(WEBHOOK_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify(payload)
+  });
+  // In no-cors la risposta è "opaque": se non lancia, consideriamo ok
+  return { ok: true };
+}
+
+/* =========================
    Submit ordine (con guard minimo)
 ========================= */
-orderForm.addEventListener('submit', (e)=>{
+orderForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
   formMsg.textContent = '';
 
@@ -935,31 +952,25 @@ orderForm.addEventListener('submit', (e)=>{
     customer: { name, address, phone, payment, privacy }
   };
 
+  // disabilita per evitare doppi invii
   submitBtn.disabled = true;
   submitBtn.classList.add('btn-disabled');
 
-  fetch(WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload)
-  })
-  .then(r => r.json())
-  .then(resp => {
-    if (!resp.ok) throw new Error(resp.error || 'Errore invio');
+  try{
+    await submitOrder(payload); // no-cors: niente lettura della risposta
     showToast(t('orderOk'));
+    // reset
     state.cart = [];
     orderForm.reset();
     renderCart();
     renderProducts();
-  })
-  .catch(err => {
-    formMsg.textContent = 'Errore invio ordine. Riprova.';
+  }catch(err){
     console.error('[Order submit]', err);
-  })
-  .finally(() => {
+    formMsg.textContent = 'Errore invio ordine. Riprova.';
+  }finally{
     submitBtn.disabled = false;
     submitBtn.classList.remove('btn-disabled');
-  });
+  }
 });
 
 /* =========================
