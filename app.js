@@ -300,7 +300,7 @@ function showToast(msg){
 /* =========================
    i18n (solo UI)
 ========================= */
-function t(key){ return T[lang][key]; }
+function t(key){ return TS[key] || key; }
 function updateStaticTexts(){
   $$('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
