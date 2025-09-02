@@ -289,3 +289,70 @@ input,select{background:#fff;color:var(--text);border:1px solid var(--border);pa
   line-height:1.4;
 }
 
+/* =======================================================================
+   PATCH TIPOGRAFIA — migliore leggibilità su schermi piccoli (Fold esterno)
+   (override non distruttivi, solo migliorano le dimensioni e i target touch)
+======================================================================= */
+:root{
+  /* tipografia fluida con limiti sensati */
+  --font-base: clamp(16px, 4.6vw, 18px);
+  --font-sm:   clamp(14px, 3.8vw, 16px);
+  --font-xs:   clamp(12px, 3.4vw, 14px);
+  --line: 1.45;
+}
+
+html { font-size: var(--font-base); }
+body { line-height: var(--line); }
+
+/* container più comodo ai bordi stretti */
+.container { padding-left: 14px; padding-right: 14px; }
+
+/* Titoli */
+h1, .hero__title { font-size: clamp(1.15rem, 5.2vw, 1.6rem); }
+.section__title { font-size: clamp(1rem, 4.6vw, 1.3rem); }
+
+/* Brand */
+.brand__title   { font-size: clamp(1.05rem, 4.8vw, 1.25rem); }
+.brand__subtitle{ font-size: var(--font-xs); }
+
+/* Card prodotto */
+.card { padding: 12px 14px; }
+.card__title { font-size: clamp(1rem, 4.4vw, 1.2rem); font-weight: 700; }
+.card__price { font-size: clamp(0.95rem, 3.8vw, 1.05rem); }
+.card__desc  { font-size: clamp(0.90rem, 3.6vw, 1rem); line-height: 1.4; }
+
+/* Pulsanti: target minimo 44px */
+.btn, .btn--ghost { min-height: 44px; }
+.btn--circle { width: 44px; height: 44px; font-size: 1.1rem; }
+
+/* Carrello */
+.item__name  { font-size: clamp(0.95rem, 3.8vw, 1.05rem); }
+.item__price { font-size: clamp(0.90rem, 3.6vw, 1rem); }
+.qty .btn--ghost { width: 44px; height: 44px; }
+
+/* Totali e riepilogo */
+.form__line { font-size: clamp(0.95rem, 3.8vw, 1.05rem); }
+.order-summary__row { font-size: clamp(0.95rem, 3.8vw, 1.05rem); }
+
+/* Banner ordine minimo più compatto */
+#minOrderBanner { font-size: var(--font-sm); }
+
+/* Privacy più piccola del testo normale */
+.privacy-text{
+  font-size: var(--font-sm);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Form: etichette e controlli un filo più grandi, ma comodi al tocco */
+.form .input,
+.form .select,
+input, select { font-size: 1rem; min-height: 44px; }
+.form__label { font-size: 0.95rem; }
+
+/* Breakpoint extra-stretto: <360px */
+@media (max-width: 360px){
+  .card { padding: 10px 12px; }
+  .btn--circle { width: 42px; height: 42px; }
+  .container { padding-left: 10px; padding-right: 10px; }
+}
