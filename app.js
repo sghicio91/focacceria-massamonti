@@ -983,8 +983,8 @@ if (!name || (fulfillment === 'delivery' && !address) || !phone || !payment || !
       qty: i.qty
     })),
     subtotal,
-    shipping_fee: SHIPPING_COST,
-    total: subtotal + SHIPPING_COST,
+shipping_fee: currentShipping(),
+total: subtotal + currentShipping(),
     customer: { name, address, phone, payment, privacy }
   };
 
@@ -1014,4 +1014,5 @@ if (!name || (fulfillment === 'delivery' && !address) || !phone || !payment || !
 ========================= */
 updateStaticTexts();
 renderProducts();
+syncFulfillmentUI();
 renderCart();
