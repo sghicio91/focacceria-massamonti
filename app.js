@@ -36,360 +36,206 @@ document.getElementById('fulfillmentPickup')?.addEventListener('change', syncFul
 
 
 /* =========================
-   Traduzioni UI (ES/IT/EN)
+   Textos fijos (solo ES)
 ========================= */
-const T = {
-  es: {
-    restaurantName: "Focacceria Massamonti (Calle Suárez Guerra 47)",
-    deliveryText: "Pedido para Deliveroo",
-    menu: "Nuestro Menú",
-    addToCart: "Añadir al carrito",
-    cart: "Carrito",
-    total: "Total",
-    customerData: "Datos del Cliente",
-    name: "Nombre",
-    address: "Dirección",
-    phone: "Teléfono",
-    paymentMethod: "Método de pago",
-    selectPayment: "Selecciona método de pago",
-    cash: "Efectivo",
-    card: "Tarjeta",
-    privacyPolicy: "Acepto la política de privacidad",
-    sendOrder: "Enviar pedido",
-    quantity: "Cantidad",
-    empty: "Tu carrito está vacío",
-    required: "Campo obligatorio",
-    orderOk: "¡Pedido enviado correctamente!",
-    shippingAndFees: "Envío y gestión",
-    size: "Tamaño",
-    medium: "Mediana",
-    large: "Grande",
-    minOrderBanner: "Pedido mínimo 20 € (sin envío)",
-    minOrderMissingA: "Pedido mínimo 20 € (sin envío). Te faltan",
-    minOrderMissingB: "€.",
-    subtotal: "Subtotal"
-  },
-  it: {
-    restaurantName: "Focacceria Massamonti (Calle Suárez Guerra 47)",
-    deliveryText: "Ordine per Deliveroo",
-    menu: "Il nostro menù",
-    addToCart: "Aggiungi al carrello",
-    cart: "Carrello",
-    total: "Totale",
-    customerData: "Dati cliente",
-    name: "Nome",
-    address: "Indirizzo",
-    phone: "Telefono",
-    paymentMethod: "Metodo di pagamento",
-    selectPayment: "Seleziona il metodo di pagamento",
-    cash: "Contanti",
-    card: "Carta",
-    privacyPolicy: "Accetto l'informativa sulla privacy",
-    sendOrder: "Invia ordine",
-    quantity: "Quantità",
-    empty: "Il carrello è vuoto",
-    required: "Campo obbligatorio",
-    orderOk: "Ordine inviato correttamente!",
-    shippingAndFees: "Spedizione e costi di gestione",
-    size: "Dimensione",
-    medium: "Media",
-    large: "Grande",
-    minOrderBanner: "Ordine minimo 20 € (esclusa spedizione)",
-    minOrderMissingA: "Ordine minimo 20 € (senza spedizione). Ti mancano",
-    minOrderMissingB: "€.",
-    subtotal: "Subtotale"
-  },
-  en: {
-    restaurantName: "Focacceria Massamonti (Calle Suárez Guerra 47)",
-    deliveryText: "Order for Deliveroo",
-    menu: "Our Menu",
-    addToCart: "Add to cart",
-    cart: "Cart",
-    total: "Total",
-    customerData: "Customer Data",
-    name: "Name",
-    address: "Address",
-    phone: "Phone",
-    paymentMethod: "Payment method",
-    selectPayment: "Select payment method",
-    cash: "Cash",
-    card: "Card",
-    privacyPolicy: "I accept the privacy policy",
-    sendOrder: "Send order",
-    quantity: "Quantity",
-    empty: "Your cart is empty",
-    required: "Required field",
-    orderOk: "Order sent successfully!",
-    shippingAndFees: "Shipping & handling",
-    size: "Size",
-    medium: "Medium",
-    large: "Large",
-    minOrderBanner: "Minimum order €20 (excl. shipping)",
-    minOrderMissingA: "Minimum order €20 (excl. shipping). You’re missing",
-    minOrderMissingB: "€.",
-    subtotal: "Subtotal"
-  },
+const TS = {
+  restaurantName: "Focacceria Massamonti (Calle Suárez Guerra 47)",
+  deliveryText: "Pedido para Deliveroo",
+  menu: "Nuestro Menú",
+  addToCart: "Añadir al carrito",
+  cart: "Carrito",
+  total: "Total",
+  customerData: "Datos del Cliente",
+  name: "Nombre",
+  address: "Dirección",
+  phone: "Teléfono",
+  paymentMethod: "Método de pago",
+  selectPayment: "Selecciona el método de pago",
+  cash: "Efectivo",
+  card: "Tarjeta",
+  privacyPolicy: "Acepto la política de privacidad",
+  sendOrder: "Enviar pedido",
+  quantity: "Cantidad",
+  empty: "Tu carrito está vacío",
+  required: "Campo obligatorio",
+  orderOk: "¡Pedido enviado correctamente!",
+  shippingAndFees: "Envío y gestión",
+  size: "Tamaño",
+  medium: "Mediana",
+  large: "Grande",
+  minOrderBanner: "Pedido mínimo 20 € (sin envío)",
+  minOrderMissingA: "Pedido mínimo 20 € (sin envío). Te faltan",
+  minOrderMissingB: "€.",
+  subtotal: "Subtotal"
 };
 
 /* =========================
-   MENU multilingua — categorie + prezzi
+   MENÚ (solo ES) — categorías + precios
 ========================= */
 const MENU = [
   {
-    category: { es: "LIMITED CON GUANCIALE", it: "LIMITED con Guanciale", en: "LIMITED with Guanciale" },
+    category: "LIMITED CON GUANCIALE",
     items: [
       { id: 1,
-        name: { es:"CARBONARA", it:"CARBONARA", en:"CARBONARA" },
-        desc: {
-          es:"Crema carbonara casera (sin nata), guanciale D.O.P., queso pecorino romano D.O.P.",
-          it:"Crema carbonara casalinga (senza panna), guanciale D.O.P., pecorino romano D.O.P.",
-          en:"Homemade carbonara cream (no cream), D.O.P. guanciale, D.O.P. pecorino romano."
-        },
+        name: "CARBONARA",
+        desc: "Crema carbonara casera (sin nata), guanciale D.O.P., queso pecorino romano D.O.P.",
         prices: { mediana: 7.00, grande: 12.00 }
       },
       { id: 2,
-        name: { es:"GUANCIARELLA", it:"GUANCIARELLA", en:"GUANCIARELLA" },
-        desc: {
-          es:"Tomate cherry, queso provolone, guanciale D.O.P., rúcula",
-          it:"Pomodorini, provolone, guanciale D.O.P., rucola",
-          en:"Cherry tomatoes, provolone, D.O.P. guanciale, arugula"
-        },
+        name: "GUANCIARELLA",
+        desc: "Tomate cherry, queso provolone, guanciale D.O.P., rúcula",
         prices: { mediana: 6.50, grande: 11.00 }
       },
       { id: 3,
-        name: { es:"FABIO", it:"FABIO", en:"FABIO" },
-        desc: {
-          es:"Crema de pistacho, tomate seco, albahaca fresca, burrata fresca, guanciale D.O.P.",
-          it:"Crema di pistacchio, pomodoro secco, basilico fresco, burrata fresca, guanciale D.O.P.",
-          en:"Pistachio cream, sun-dried tomato, fresh basil, fresh burrata, D.O.P. guanciale"
-        },
+        name: "FABIO",
+        desc: "Crema de pistacho, tomate seco, albahaca fresca, burrata fresca, guanciale D.O.P.",
         prices: { mediana: 8.00, grande: 14.00 }
       },
     ],
   },
   {
-    category: { es:"VEGETARIANAS", it:"VEGETARIANE", en:"VEGETARIAN" },
+    category: "VEGETARIANAS",
     items: [
       { id: 4,
-        name:{ es:"GRAZIA", it:"GRAZIA", en:"GRAZIA" },
-        desc:{
-          es:"Crema de pistacho, mozzarella fresca, tomate seco",
-          it:"Crema di pistacchio, mozzarella fresca, pomodoro secco",
-          en:"Pistachio cream, fresh mozzarella, sun-dried tomato"
-        },
+        name:"GRAZIA",
+        desc:"Crema de pistacho, mozzarella fresca, tomate seco",
         prices:{ mediana:6.00, grande:10.00 }
       },
       { id: 5,
-        name:{ es:"SICILIANA", it:"SICILIANA", en:"SICILIANA" },
-        desc:{
-          es:"Tomate fresco, berenjenas al horno, mozzarella fresca, albahaca",
-          it:"Pomodoro fresco, melanzane al forno, mozzarella fresca, basilico",
-          en:"Fresh tomato, baked eggplant, fresh mozzarella, basil"
-        },
+        name:"SICILIANA",
+        desc:"Tomate fresco, berenjenas al horno, mozzarella fresca, albahaca",
         prices:{ mediana:6.00, grande:10.00 }
       },
       { id: 6,
-        name:{ es:"SPLENDIDA", it:"SPLENDIDA", en:"SPLENDIDA" },
-        desc:{
-          es:"Mozzarella fresca, crema de alcachofas, tomate seco",
-          it:"Mozzarella fresca, crema di carciofi, pomodoro secco",
-          en:"Fresh mozzarella, artichoke cream, sun-dried tomato"
-        },
+        name:"SPLENDIDA",
+        desc:"Mozzarella fresca, crema de alcachofas, tomate seco",
         prices:{ mediana:6.00, grande:10.00 }
       },
       { id: 7,
-        name:{ es:"CAPRESE", it:"CAPRESE", en:"CAPRESE" },
-        desc:{
-          es:"Tomate fresco, albahaca, mozzarella fresca",
-          it:"Pomodoro fresco, basilico, mozzarella fresca",
-          en:"Fresh tomato, basil, fresh mozzarella"
-        },
+        name:"CAPRESE",
+        desc:"Tomate fresco, albahaca, mozzarella fresca",
         prices:{ mediana:6.00, grande:10.00 }
       },
     ],
   },
   {
-    category: { es:"MÁS POPULARES", it:"PIÙ POPOLARI", en:"MOST POPULAR" },
+    category: "MÁS POPULARES",
     items: [
       { id: 8,
-        name:{ es:"INFERNO", it:"INFERNO", en:"INFERNO" },
-        desc:{
-          es:"Porchetta Massamonti, berenjenas al horno, ’Nduja de Spilinga, rúcula",
-          it:"Porchetta Massamonti, melanzane al forno, ’Nduja di Spilinga, rucola",
-          en:"Massamonti porchetta, baked eggplant, ’Nduja from Spilinga, arugula"
-        },
+        name:"INFERNO",
+        desc:"Porchetta Massamonti, berenjenas al horno, ’Nduja de Spilinga, rúcula",
         prices:{ mediana:7.00, grande:12.00 }
       },
       { id: 9,
-        name:{ es:"ÚNICA", it:"ÚNICA", en:"ÚNICA" },
-        desc:{
-          es:"Rúcula, bresaola, crema de parmesano",
-          it:"Rucola, bresaola, crema di parmigiano",
-          en:"Arugula, bresaola, parmesan cream"
-        },
+        name:"ÚNICA",
+        desc:"Rúcula, bresaola, crema de parmesano",
         prices:{ mediana:7.50, grande:13.00 }
       },
       { id: 10,
-        name:{ es:"ESTIVA", it:"ESTIVA", en:"ESTIVA" },
-        desc:{
-          es:"Tomate fresco, albahaca fresca, mozzarella fresca, jamón serrano italiano",
-          it:"Pomodoro fresco, basilico fresco, mozzarella fresca, prosciutto crudo italiano",
-          en:"Fresh tomato, fresh basil, fresh mozzarella, Italian cured ham"
-        },
+        name:"ESTIVA",
+        desc:"Tomate fresco, albahaca fresca, mozzarella fresca, jamón serrano italiano",
         prices:{ mediana:6.00, grande:10.00 }
       },
       { id: 11,
-        name:{ es:"TARTUFO", it:"TARTUFO", en:"TARTUFO" },
-        desc:{
-          es:"Mortadella I.G.P. con trufa, mozzarella fresca, crema de setas, rúcula",
-          it:"Mortadella I.G.P. al tartufo, mozzarella fresca, crema di funghi, rucola",
-          en:"I.G.P. truffle mortadella, fresh mozzarella, mushroom cream, arugula"
-        },
+        name:"TARTUFO",
+        desc:"Mortadella I.G.P. con trufa, mozzarella fresca, crema de setas, rúcula",
         prices:{ mediana:6.50, grande:11.00 }
       },
       { id: 12,
-        name:{ es:"SPECK TARTUFATA", it:"SPECK TARTUFATA", en:"SPECK TARTUFATA" },
-        desc:{
-          es:"Speck, scamorza ahumada, crema de trufa",
-          it:"Speck, scamorza affumicata, crema di tartufo",
-          en:"Speck, smoked scamorza, truffle cream"
-        },
+        name:"SPECK TARTUFATA",
+        desc:"Speck, scamorza ahumada, crema de trufa",
         prices:{ mediana:6.00, grande:10.00 }
       },
       { id: 13,
-        name:{ es:"TARTUFINA", it:"TARTUFINA", en:"TARTUFINA" },
-        desc:{
-          es:"Salami milano, crema de trufa, provolone",
-          it:"Salame Milano, crema di tartufo, provolone",
-          en:"Milano salami, truffle cream, provolone"
-        },
+        name:"TARTUFINA",
+        desc:"Salami milano, crema de trufa, provolone",
         prices:{ mediana:6.00, grande:10.00 }
       },
       { id: 14,
-        name:{ es:"AMY", it:"AMY", en:"AMY" },
-        desc:{
-          es:"Mortadella I.G.P. con pistacho, crema de pistacho, queso stracciatella, pistacho troceado",
-          it:"Mortadella I.G.P. al pistacchio, crema di pistacchio, stracciatella, granella di pistacchio",
-          en:"I.G.P. pistachio mortadella, pistachio cream, stracciatella cheese, chopped pistachio"
-        },
+        name:"AMY",
+        desc:"Mortadella I.G.P. con pistacho, crema de pistacho, queso stracciatella, pistacho troceado",
         prices:{ mediana:7.50, grande:13.00 }
       },
       { id: 15,
-        name:{ es:"RÚSTICA", it:"RUSTICA", en:"RUSTICA" },
-        desc:{
-          es:"Crema de queso pecorino Romano D.O.P., pancetta enrollada, rúcula, tomate seco",
-          it:"Crema di pecorino romano D.O.P., pancetta arrotolata, rucola, pomodoro secco",
-          en:"D.O.P. pecorino romano cream, rolled pancetta, arugula, sun-dried tomato"
-        },
+        name:"RÚSTICA",
+        desc:"Crema de queso pecorino Romano D.O.P., pancetta enrollada, rúcula, tomate seco",
         prices:{ mediana:6.00, grande:10.00 }
       },
     ],
   },
   {
-    category: { es:"SPECIAL", it:"SPECIALI", en:"SPECIAL" },
+    category: "SPECIAL",
     items: [
       { id: 16,
-        name:{ es:"BURRATA", it:"BURRATA", en:"BURRATA" },
-        desc:{
-          es:"Mortadella I.G.P. con pistacho, burrata fresca, pistacho troceado",
-          it:"Mortadella I.G.P. al pistacchio, burrata fresca, granella di pistacchio",
-          en:"I.G.P. pistachio mortadella, fresh burrata, chopped pistachio"
-        },
+        name:"BURRATA",
+        desc:"Mortadella I.G.P. con pistacho, burrata fresca, pistacho troceado",
         prices:{ mediana:6.50, grande:11.00 }
       },
       { id: 17,
-        name:{ es:"BURRATA TOP", it:"BURRATA TOP", en:"BURRATA TOP" },
-        desc:{
-          es:"Jamón serrano italiano, crema de trufa, burrata fresca",
-          it:"Prosciutto crudo italiano, crema di tartufo, burrata fresca",
-          en:"Italian cured ham, truffle cream, fresh burrata"
-        },
+        name:"BURRATA TOP",
+        desc:"Jamón serrano italiano, crema de trufa, burrata fresca",
         prices:{ mediana:7.00, grande:12.00 }
       },
       { id: 18,
-        name:{ es:"SPECK TORRE", it:"SPECK TORRE", en:"SPECK TORRE" },
-        desc:{
-          es:"Speck, scamorza ahumada, crema de trufa, burrata fresca",
-          it:"Speck, scamorza affumicata, crema di tartufo, burrata fresca",
-          en:"Speck, smoked scamorza, truffle cream, fresh burrata"
-        },
+        name:"SPECK TORRE",
+        desc:"Speck, scamorza ahumada, crema de trufa, burrata fresca",
         prices:{ mediana:7.50, grande:13.00 }
       },
       { id: 19,
-        name:{ es:"PISTACCHIELLA", it:"PISTACCHIELLA", en:"PISTACCHIELLA" },
-        desc:{
-          es:"Mortadella I.G.P. con pistacho, tomate seco, queso gorgonzola, crema de pistacho",
-          it:"Mortadella I.G.P. al pistacchio, pomodoro secco, gorgonzola, crema di pistacchio",
-          en:"I.G.P. pistachio mortadella, sun-dried tomato, gorgonzola, pistachio cream"
-        },
+        name:"PISTACCHIELLA",
+        desc:"Mortadella I.G.P. con pistacho, tomate seco, queso gorgonzola, crema de pistacho",
         prices:{ mediana:6.50, grande:11.00 }
       },
       { id: 20,
-        name:{ es:"SUPREMA", it:"SUPREMA", en:"SUPREMA" },
-        desc:{
-          es:"Salami finocchiona, crema de alcachofas, berenjenas al horno, scamorza ahumada",
-          it:"Finocchiona, crema di carciofi, melanzane al forno, scamorza affumicata",
-          en:"Finocchiona salami, artichoke cream, baked eggplant, smoked scamorza"
-        },
+        name:"SUPREMA",
+        desc:"Salami finocchiona, crema de alcachofas, berenjenas al horno, scamorza ahumada",
         prices:{ mediana:7.00, grande:12.00 }
       },
       { id: 21,
-        name:{ es:"BEA", it:"BEA", en:"BEA" },
-        desc:{
-          es:"Bresaola, mozzarella fresca, crema de setas, rúcula",
-          it:"Bresaola, mozzarella fresca, crema di funghi, rucola",
-          en:"Bresaola, fresh mozzarella, mushroom cream, arugula"
-        },
+        name:"BEA",
+        desc:"Bresaola, mozzarella fresca, crema de setas, rúcula",
         prices:{ mediana:7.50, grande:13.00 }
       },
       { id: 22,
-        name:{ es:"TRICOLORE", it:"TRICOLORE", en:"TRICOLORE" },
-        desc:{
-          es:"Salami spianata picante, queso stracciatella, rúcula",
-          it:"Spianata piccante, stracciatella, rucola",
-          en:"Spicy spianata salami, stracciatella cheese, arugula"
-        },
+        name:"TRICOLORE",
+        desc:"Salami spianata picante, queso stracciatella, rúcula",
         prices:{ mediana:7.00, grande:12.00 }
       },
       { id: 23,
-        name:{ es:"PRIMAVERA", it:"PRIMAVERA", en:"PRIMAVERA" },
-        desc:{
-          es:"Jamón serrano italiano, pesto de albahaca, mozzarella fresca, tomate seco",
-          it:"Prosciutto crudo italiano, pesto al basilico, mozzarella fresca, pomodoro secco",
-          en:"Italian cured ham, basil pesto, fresh mozzarella, sun-dried tomato"
-        },
+        name:"PRIMAVERA",
+        desc:"Jamón serrano italiano, pesto de albahaca, mozzarella fresca, tomate seco",
         prices:{ mediana:6.50, grande:11.00 }
       },
     ],
   },
   {
-    category: { es:"Cervezas", it:"Birre", en:"Beers" },
+    category: "Cervezas",
     items: [
-      { id: 101, name: { es:"Cerveza Moretti 33cl", it:"Birra Moretti 33cl", en:"Moretti 33cl" }, price: 2.50 },
-      { id: 102, name: { es:"Cerveza Peroni 33cl",  it:"Birra Peroni 33cl",  en:"Peroni 33cl" },  price: 2.50 },
-      { id: 104, name: { es:"Cerveza Messina 33cl", it:"Birra Messina 33cl", en:"Messina 33cl" }, price: 3.50 },
-      { id: 105, name: { es:"Cerveza Ichnusa 33cl", it:"Birra Ichnusa 33cl", en:"Ichnusa 33cl" }, price: 3.50 },
+      { id: 101, name: "Cerveza Moretti 33cl", price: 2.50 },
+      { id: 102, name: "Cerveza Peroni 33cl",  price: 2.50 },
+      { id: 104, name: "Cerveza Messina 33cl", price: 3.50 },
+      { id: 105, name: "Cerveza Ichnusa 33cl", price: 3.50 },
     ],
   },
   {
-    category: { es:"Refrescos en lata", it:"Bibite in lattina", en:"Canned soft drinks" },
+    category: "Refrescos en lata",
     items: [
-      { id: 201, name: { es:"Coca Cola",            it:"Coca-Cola",             en:"Coca-Cola" },            price: 2.50 },
-      { id: 202, name: { es:"Coca Cola Zero",       it:"Coca-Cola Zero",        en:"Coca-Cola Zero" },       price: 2.50 },
-      { id: 203, name: { es:"Coca Cola Zero Zero",  it:"Coca-Cola Zero Zero",   en:"Coca-Cola Zero Zero" },  price: 2.50 },
-      { id: 204, name: { es:"Fanta",                it:"Fanta",                 en:"Fanta" },                price: 2.50 },
-      { id: 205, name: { es:"Fuzetea Mango Piña",   it:"Fuzetea Mango Ananas",  en:"Fuzetea Mango Pineapple" }, price: 2.50 },
-      { id: 206, name: { es:"Nestea Maracuyá",      it:"Nestea Maracuja",       en:"Nestea Passion Fruit" }, price: 2.50 },
-      { id: 207, name: { es:"Appletizer",           it:"Appletiser",            en:"Appletiser" },           price: 2.50 },
-      { id: 208, name: { es:"Chinotto",             it:"Chinotto",              en:"Chinotto" },             price: 2.50 },
-      { id: 209, name: { es:"Estathé Limón",        it:"Estathé Limone",        en:"Estathé Lemon" },        price: 2.50 },
-      { id: 210, name: { es:"Estathé Melocotón",    it:"Estathé Pesca",         en:"Estathé Peach" },        price: 2.50 },
+      { id: 201, name: "Coca Cola",           price: 2.50 },
+      { id: 202, name: "Coca Cola Zero",      price: 2.50 },
+      { id: 203, name: "Coca Cola Zero Zero", price: 2.50 },
+      { id: 204, name: "Fanta",               price: 2.50 },
+      { id: 205, name: "Fuzetea Mango Piña",  price: 2.50 },
+      { id: 206, name: "Nestea Maracuyá",     price: 2.50 },
+      { id: 207, name: "Appletizer",          price: 2.50 },
+      { id: 208, name: "Chinotto",            price: 2.50 },
+      { id: 209, name: "Estathé Limón",       price: 2.50 },
+      { id: 210, name: "Estathé Melocotón",   price: 2.50 },
     ],
   },
   {
-    category: { es:"Otras bebidas", it:"Altre bevande", en:"Other drinks" },
+    category: "Otras bebidas",
     items: [
-      { id: 103, name: { es:"Agua pequeña", it:"Acqua piccola", en:"Small water" }, price: 1.00 },
+      { id: 103, name: "Agua pequeña", price: 1.00 },
     ],
   },
 ];
