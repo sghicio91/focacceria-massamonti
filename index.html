@@ -18,71 +18,80 @@
         <span class="brand__subtitle" data-i18n="deliveryText">
           Pedido para Deliveroo
         </span>
-        <div id="minOrderBanner" data-i18n="minOrderBanner">
-          Pedido mínimo 20 € (sin envío)
-        </div>
       </div>
+      <button id="cartBtn" class="btn btn--ghost" aria-label="Open cart">
+        🧺 <span class="cart-count" id="cartCount">0</span>
+      </button>
     </div>
   </header>
 
+  
+  <section class="hero">
+    <div class="hero__bg" style="background-image:url('focacceria.jpg');" aria-hidden="true"></div>
+    <div class="container hero__content">
+      <h1 class="hero__title" data-i18n="restaurantName">Focacceria Massamonti (Calle Suárez Guerra 47)</h1>
+      <p id="minOrderBanner" class="hero__subtitle"></p>
+    </div>
+  </section>
+
+  
   <main class="container">
-
     
-    <section class="menu">
-  <div class="section__bar">
-    <h2 class="section__title" data-i18n="menu">Nuestro Menú</h2>
-
-    <button id="cartBtn" class="btn btn--ghost">
-      🛒 <span data-i18n="cart"></span>
-      <span id="cartCount" class="badge" aria-live="polite">0</span>
-    </button>
-  </div>
-
-  <div id="productGrid" class="grid"></div>
-</section>
-
-
-    
-    <section class="order">
-      <h2 class="section__title" data-i18n="customerData">Datos del Cliente</h2>
-      <form id="orderForm" class="form">
-        <div class="form__row">
-          <label for="name" data-i18n="name">Nombre</label>
-          <input id="name" name="name" required>
-        </div>
-        <div class="form__row">
-          <label for="address" data-i18n="address">Dirección</label>
-          <input id="address" name="address" required>
-        </div>
-        <div class="form__row">
-          <label for="phone" data-i18n="phone">Teléfono</label>
-          <input id="phone" name="phone" type="tel" required>
-        </div>
-        <div class="form__row">
-          <label for="payment" data-i18n="paymentMethod">Método de pago</label>
-          <select id="payment" name="payment" required>
-            <option value="" data-i18n="selectPayment">Selecciona método de pago</option>
-            <option value="cash" data-i18n="cash">Efectivo</option>
-            <option value="card" data-i18n="card">Tarjeta</option>
+    <section class="section">
+      <div class="section__bar">
+        <h2 class="section__title" data-i18n="menu">Nuestro menú</h2>
+        <div class="section__actions">
+          <select id="lang" class="select" aria-label="Language">
+            <option value="es">ES</option>
+            <option value="it">IT</option>
+            <option value="en">EN</option>
           </select>
         </div>
-       <div class="form__row form__row--checkbox">
-  <input id="privacy" type="checkbox" required>
-  <label for="privacy" data-i18n="privacyPolicy">Acepto la política de privacidad</label>
-</div>
-<p class="privacy-text">
-  De conformidad con lo establecido en el Reglamento (UE) 2016/679 (RGPD) y en la Ley Orgánica 3/2018, 
-  le informamos que los datos personales que nos facilite serán tratados únicamente con la finalidad de 
-  gestionar su pedido y la entrega a domicilio. Sus datos no se cederán a terceros, salvo obligación legal.  
-  Puede ejercer sus derechos de acceso, rectificación, supresión y demás derechos enviando una solicitud a 
-  <a href="mailto:tuemail@ejemplo.com">tuemail@ejemplo.com</a>.
-</p>
+      </div>
 
+      <div id="menu" class="grid"></div>
+    </section>
+
+    
+    <section class="section">
+      <h2 class="section__title" data-i18n="customerData">Datos del cliente</h2>
+
+      <form id="orderForm" class="form" novalidate>
+        <div class="form__grid">
+          <label class="form__field">
+            <span class="form__label" data-i18n="name">Nombre</span>
+            <input id="name" name="name" class="input" required placeholder="Tu nombre">
+          </label>
+
+          <label class="form__field">
+            <span class="form__label" data-i18n="address">Dirección</span>
+            <input id="address" name="address" class="input" required placeholder="Calle, número, piso">
+          </label>
+
+          <label class="form__field">
+            <span class="form__label" data-i18n="phone">Teléfono</span>
+            <input id="phone" name="phone" class="input" inputmode="tel" required placeholder="+34 6XX XX XX XX">
+          </label>
+
+          <label class="form__field">
+            <span class="form__label" data-i18n="paymentMethod">Método de pago</span>
+            <select id="payment" name="payment" class="select" required>
+              <option value="" selected disabled data-i18n="selectPayment">Selecciona el método de pago</option>
+              <option value="cash" data-i18n="cash">Efectivo</option>
+              <option value="card" data-i18n="card">Tarjeta</option>
+            </select>
+          </label>
+
+          <label class="form__checkbox">
+            <input id="privacy" type="checkbox" required>
+            <span data-i18n="privacyPolicy">Acepto la política de privacidad</span>
+          </label>
+        </div>
+
+        <!-- 🔧 FIX: riepilogo prodotti + contenitore totale a blocchi -->
         <div class="form__footer">
-          <div class="total">
-            <span data-i18n="total">Total</span>:
-            <strong id="grandTotal">€0.00</strong>
-          </div>
+          <div id="orderSummary" class="order-summary"></div>
+          <div id="grandTotal" class="form__totals"></div>
           <button class="btn" id="submitBtn" type="submit" disabled>
             <span data-i18n="sendOrder">Enviar pedido</span>
           </button>
@@ -102,14 +111,24 @@
   </aside>
 
   
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="modal__backdrop" id="modalBackdrop"></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div id="modal" class="modal" aria-hidden="true" aria-labelledby="modalTitle">
+    <div class="modal__dialog">
       <div class="modal__header">
-        <h4 id="modalTitle" class="modal__title"></h4>
-        <button id="modalClose" class="btn btn--ghost" aria-label="Close">✕</button>
+        <h3 id="modalTitle" class="modal__title"></h3>
+        <button id="closeModal" class="btn btn--ghost" aria-label="Close">✕</button>
       </div>
-      <div id="modalBody" class="modal__body"></div>
+
+      <div class="modal__body">
+        <p id="modalDesc" class="modal__desc"></p>
+        <div class="modal__sizes" id="sizeOptions"></div>
+
+        <div class="qty">
+          <button id="qtyMinus" class="btn btn--ghost" aria-label="Minus">−</button>
+          <input id="qtyInput" class="input input--qty" type="number" min="1" value="1" aria-label="Quantity">
+          <button id="qtyPlus" class="btn btn--ghost" aria-label="Plus">+</button>
+        </div>
+      </div>
+
       <div class="modal__footer">
         <div class="modal__price" id="modalPrice">€0.00</div>
         <button id="modalAdd" class="btn">
