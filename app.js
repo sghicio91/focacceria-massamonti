@@ -985,6 +985,7 @@ if (!name || (fulfillment === 'delivery' && !address) || !phone || !payment || !
     subtotal,
 shipping_fee: currentShipping(),
 total: subtotal + currentShipping(),
+     fulfillment, // 'delivery' | 'pickup'
     customer: { name, address, phone, payment, privacy }
   };
 
