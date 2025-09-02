@@ -950,16 +950,23 @@ orderForm.addEventListener('submit', async (e)=>{
     return;
   }
 
-  const name = $('#name').value.trim();
-  const address = $('#address').value.trim();
-  const phone = $('#phone').value.trim();
-  const payment = $('#payment').value;
-  const privacy = $('#privacy').checked;
+  const fulfillment = getFulfillment(); // 'delivery' | 'pickup'
+const name = $('#name').value.trim();
+let address = $('#address').value.trim();
+const phone = $('#phone').value.trim();
+const payment = $('#payment').value;
+const privacy = $('#privacy').checked;
 
-  if (!name || !address || !phone || !payment || !privacy){
-    formMsg.textContent = t('required');
-    return;
-  }
+// Se è ritiro in negozio, usiamo l'indirizzo del locale
+if (fulfillment === 'pickup') {
+  address = `Recogida en tienda - ${STORE_ADDRESS}`;
+}
+
+if (!name || (fulfillment === 'delivery' && !address) || !phone || !payment || !privacy){
+  formMsg.textContent = t('required');
+  return;
+}
+
 
   const subtotal = getSubtotal();
   if (subtotal < MIN_ORDER){
