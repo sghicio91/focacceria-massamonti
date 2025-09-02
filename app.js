@@ -705,14 +705,16 @@ function renderCart(){
   cartCount.textContent = String(totalItems);
 
   const subtotal = getSubtotal();
-  const total = subtotal + SHIPPING_COST;
+const shipping = currentShipping();
+const total = subtotal + shipping;
 
-  grandTotal.innerHTML = `
-    <div class="form__line"><strong>${t('subtotal')}:</strong> ${fmt(subtotal)}</div>
-    <div class="form__line">${t('shippingAndFees')}: <strong>${fmt(SHIPPING_COST)}</strong></div>
-    <div class="form__line">${t('total')}: <strong>${fmt(total)}</strong></div>
-    <p id="minOrderNotice" class="alert" style="display:none;margin-top:.5rem;"></p>
-  `;
+grandTotal.innerHTML = `
+  <div class="form__line"><strong>${t('subtotal')}:</strong> ${fmt(subtotal)}</div>
+  <div class="form__line">${t('shippingAndFees')}: <strong>${fmt(shipping)}</strong></div>
+  <div class="form__line">${t('total')}: <strong>${fmt(total)}</strong></div>
+  <p id="minOrderNotice" class="alert" style="display:none;margin-top:.5rem;"></p>
+`;
+
 
   enforceMinOrder(subtotal);
 
