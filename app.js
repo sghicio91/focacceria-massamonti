@@ -979,10 +979,12 @@ if (!name || (fulfillment === 'delivery' && !address) || !phone || !payment || !
 
 
   const subtotal = getSubtotal();
-  if (subtotal < MIN_ORDER){
-    enforceMinOrder(subtotal);
-    return;
-  }
+// ➜ Applica il minimo solo per consegna a domicilio
+if (getFulfillment() === 'delivery' && subtotal < MIN_ORDER){
+  enforceMinOrder(subtotal);
+  return;
+}
+
 
   const payload = {
     items: state.cart.map(i => ({
