@@ -744,9 +744,18 @@ grandTotal.innerHTML = `
 }
 
 function enforceMinOrder(subtotal){
-  const btn   = submitBtn;
-  const note  = $('#minOrderNotice');
+  const btn  = submitBtn;
+  const note = $('#minOrderNotice');
   if (!btn || !note) return;
+
+  // ➜ Nessun minimo se è ritiro in negozio
+  if (getFulfillment() === 'pickup') {
+    btn.disabled = false;
+    btn.classList.remove('btn-disabled');
+    note.style.display = 'none';
+    note.textContent = '';
+    return;
+  }
 
   const remaining = Math.max(0, MIN_ORDER - subtotal);
   if (remaining > 0){
@@ -765,6 +774,7 @@ function enforceMinOrder(subtotal){
     note.textContent = '';
   }
 }
+
 
 function updateVariantQty(item, newQty){
   if (newQty <= 0){ removeVariant(item); return; }
