@@ -36,7 +36,7 @@
 
   <main class="container">
 
-    <!-- ✅ MENU (lasciamo l’ID “menu” come mi hai chiesto) -->
+    <!-- ✅ MENÚ (lo lasciamo così) -->
     <section class="section">
       <div class="section__bar">
         <h2 class="section__title" data-i18n="menu">Nuestro menú</h2>
@@ -59,12 +59,29 @@
 
       <form id="orderForm" class="form" novalidate>
         <div class="form__grid">
+
+          <!-- 🔹 Nuova scelta: Envío / Recogida -->
+          <fieldset class="form__field">
+            <span class="form__label">Entrega</span>
+            <div class="radio-group">
+              <label class="radio">
+                <input type="radio" name="fulfillment" id="fulfillmentDelivery" value="delivery" checked>
+                Envío a domicilio
+              </label>
+              <label class="radio" style="margin-left: 12px;">
+                <input type="radio" name="fulfillment" id="fulfillmentPickup" value="pickup">
+                Recogida en tienda
+              </label>
+            </div>
+            <small class="muted">Recogida: Calle Suárez Guerra 47 (Santa Cruz)</small>
+          </fieldset>
+
           <label class="form__field">
             <span class="form__label" data-i18n="name">Nombre</span>
             <input id="name" name="name" class="input" required placeholder="Tu nombre">
           </label>
 
-          <label class="form__field">
+          <label class="form__field" id="addressField">
             <span class="form__label" data-i18n="address">Dirección</span>
             <input id="address" name="address" class="input" required placeholder="Calle, número, piso">
           </label>
@@ -87,9 +104,18 @@
             <input id="privacy" type="checkbox" required>
             <span data-i18n="privacyPolicy">Acepto la política de privacidad</span>
           </label>
+
+          <!-- 🔹 Testo privacy (ripristinato) -->
+          <p class="privacy-text">
+            De conformidad con lo establecido en el Reglamento (UE) 2016/679 (RGPD) y en la Ley Orgánica 3/2018,
+            le informamos que los datos personales que nos facilite serán tratados únicamente con la finalidad de
+            gestionar su pedido y la entrega a domicilio. Sus datos no se cederán a terceros, salvo obligación legal.
+            Puede ejercer sus derechos de acceso, rectificación, supresión y demás derechos enviando una solicitud a
+            <a href="mailto:tuemail@ejemplo.com">tuemail@ejemplo.com</a>.
+          </p>
         </div>
 
-        <!-- Riepilogo prodotti + Totali a blocchi -->
+        <!-- Riepilogo prodotti + Totali -->
         <div class="form__footer">
           <div id="orderSummary" class="order-summary"></div>
           <div id="grandTotal" class="form__totals"></div>
