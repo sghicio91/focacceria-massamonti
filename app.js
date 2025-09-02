@@ -8,6 +8,33 @@ const SHIPPING_COST = 5;     // costo spedizione
 // URL del Web App di Google Apps Script (deployment con accesso "Anyone")
 const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwyI7nufMTvpLzOmuSztuU9EK0ysY7TLjXMcjwqt2nDtKAMd1xzn6AfGJk2xTLrFE9-/exec';
 
+// Indirizzo negozio usato per gli ordini con "Recogida"
+const STORE_ADDRESS = 'Calle Suárez Guerra 47, Santa Cruz de Tenerife';
+
+// Fulfillment helpers
+function getFulfillment(){
+  const sel = document.querySelector('input[name="fulfillment"]:checked');
+  return sel ? sel.value : 'delivery';
+}
+function currentShipping(){
+  return getFulfillment() === 'pickup' ? 0 : SHIPPING_COST;
+}
+function syncFulfillmentUI(){
+  const addressField = document.getElementById('addressField') || document.getElementById('address')?.parentElement;
+  if (!addressField) return;
+  if (getFulfillment() === 'pickup'){
+    addressField.style.display = 'none';
+  } else {
+    addressField.style.display = '';
+  }
+  // Aggiorna i totali quando cambia il metodo
+  renderCart();
+}
+// Listeners (se gli elementi esistono)
+document.getElementById('fulfillmentDelivery')?.addEventListener('change', syncFulfillmentUI);
+document.getElementById('fulfillmentPickup')?.addEventListener('change', syncFulfillmentUI);
+
+
 /* =========================
    Traduzioni UI (ES/IT/EN)
 ========================= */
