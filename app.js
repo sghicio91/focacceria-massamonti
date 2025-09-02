@@ -256,14 +256,8 @@ const L = (val) => {
   return '';
 };
 
-// Lingua: ?lang > localStorage > navigator > 'es'
-const params = new URLSearchParams(location.search);
-let lang =
-  params.get('lang') ||
-  localStorage.getItem('preferred-lang') ||
-  (navigator.language || 'es').slice(0,2).toLowerCase();
-if (!T[lang]) lang = 'es';
-document.documentElement.lang = lang;
+const lang = 'es';
+document.documentElement.lang = 'es';
 
 const state = {
   cart: [],            // {id, name, size?, price, qty}
