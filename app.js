@@ -3,12 +3,12 @@
 /* =========================
    Config
 ========================= */
-const MIN_ORDER = 20;        // minimo ordine (esclusa spedizione)
-const SHIPPING_COST = 5;     // costo spedizione
-// URL del Web App di Google Apps Script (deployment con accesso "Anyone")
+const MIN_ORDER = 20;        // mínimo de pedido (sin envío)
+const SHIPPING_COST = 5;     // coste de envío
+// URL del Web App de Google Apps Script (deployment con acceso "Anyone")
 const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwyI7nufMTvpLzOmuSztuU9EK0ysY7TLjXMcjwqt2nDtKAMd1xzn6AfGJk2xTLrFE9-/exec';
 
-// Indirizzo negozio usato per gli ordini con "Recogida"
+// Dirección de tienda para "Recogida"
 const STORE_ADDRESS = 'Calle Suárez Guerra 47, Santa Cruz de Tenerife';
 
 // Fulfillment helpers
@@ -22,18 +22,13 @@ function currentShipping(){
 function syncFulfillmentUI(){
   const addressField = document.getElementById('addressField') || document.getElementById('address')?.parentElement;
   if (!addressField) return;
-  if (getFulfillment() === 'pickup'){
-    addressField.style.display = 'none';
-  } else {
-    addressField.style.display = '';
-  }
-  // Aggiorna i totali quando cambia il metodo
+  addressField.style.display = (getFulfillment() === 'pickup') ? 'none' : '';
+  // refresca totales al cambiar el método
   renderCart();
 }
-// Listeners (se gli elementi esistono)
+// Listeners (si existen)
 document.getElementById('fulfillmentDelivery')?.addEventListener('change', syncFulfillmentUI);
 document.getElementById('fulfillmentPickup')?.addEventListener('change', syncFulfillmentUI);
-
 
 /* =========================
    Textos fijos (solo ES)
@@ -96,116 +91,36 @@ const MENU = [
   {
     category: "VEGETARIANAS",
     items: [
-      { id: 4,
-        name:"GRAZIA",
-        desc:"Crema de pistacho, mozzarella fresca, tomate seco",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
-      { id: 5,
-        name:"SICILIANA",
-        desc:"Tomate fresco, berenjenas al horno, mozzarella fresca, albahaca",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
-      { id: 6,
-        name:"SPLENDIDA",
-        desc:"Mozzarella fresca, crema de alcachofas, tomate seco",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
-      { id: 7,
-        name:"CAPRESE",
-        desc:"Tomate fresco, albahaca, mozzarella fresca",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
+      { id: 4, name:"GRAZIA",    desc:"Crema de pistacho, mozzarella fresca, tomate seco",                              prices:{ mediana:6.00, grande:10.00 } },
+      { id: 5, name:"SICILIANA", desc:"Tomate fresco, berenjenas al horno, mozzarella fresca, albahaca",               prices:{ mediana:6.00, grande:10.00 } },
+      { id: 6, name:"SPLENDIDA", desc:"Mozzarella fresca, crema de alcachofas, tomate seco",                           prices:{ mediana:6.00, grande:10.00 } },
+      { id: 7, name:"CAPRESE",   desc:"Tomate fresco, albahaca, mozzarella fresca",                                    prices:{ mediana:6.00, grande:10.00 } },
     ],
   },
   {
     category: "MÁS POPULARES",
     items: [
-      { id: 8,
-        name:"INFERNO",
-        desc:"Porchetta Massamonti, berenjenas al horno, ’Nduja de Spilinga, rúcula",
-        prices:{ mediana:7.00, grande:12.00 }
-      },
-      { id: 9,
-        name:"ÚNICA",
-        desc:"Rúcula, bresaola, crema de parmesano",
-        prices:{ mediana:7.50, grande:13.00 }
-      },
-      { id: 10,
-        name:"ESTIVA",
-        desc:"Tomate fresco, albahaca fresca, mozzarella fresca, jamón serrano italiano",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
-      { id: 11,
-        name:"TARTUFO",
-        desc:"Mortadella I.G.P. con trufa, mozzarella fresca, crema de setas, rúcula",
-        prices:{ mediana:6.50, grande:11.00 }
-      },
-      { id: 12,
-        name:"SPECK TARTUFATA",
-        desc:"Speck, scamorza ahumada, crema de trufa",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
-      { id: 13,
-        name:"TARTUFINA",
-        desc:"Salami milano, crema de trufa, provolone",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
-      { id: 14,
-        name:"AMY",
-        desc:"Mortadella I.G.P. con pistacho, crema de pistacho, queso stracciatella, pistacho troceado",
-        prices:{ mediana:7.50, grande:13.00 }
-      },
-      { id: 15,
-        name:"RÚSTICA",
-        desc:"Crema de queso pecorino Romano D.O.P., pancetta enrollada, rúcula, tomate seco",
-        prices:{ mediana:6.00, grande:10.00 }
-      },
+      { id: 8,  name:"INFERNO",         desc:"Porchetta Massamonti, berenjenas al horno, ’Nduja de Spilinga, rúcula",   prices:{ mediana:7.00, grande:12.00 } },
+      { id: 9,  name:"ÚNICA",           desc:"Rúcula, bresaola, crema de parmesano",                                   prices:{ mediana:7.50, grande:13.00 } },
+      { id: 10, name:"ESTIVA",          desc:"Tomate fresco, albahaca fresca, mozzarella fresca, jamón serrano italiano", prices:{ mediana:6.00, grande:10.00 } },
+      { id: 11, name:"TARTUFO",         desc:"Mortadella I.G.P. con trufa, mozzarella fresca, crema de setas, rúcula", prices:{ mediana:6.50, grande:11.00 } },
+      { id: 12, name:"SPECK TARTUFATA", desc:"Speck, scamorza ahumada, crema de trufa",                                prices:{ mediana:6.00, grande:10.00 } },
+      { id: 13, name:"TARTUFINA",       desc:"Salami milano, crema de trufa, provolone",                               prices:{ mediana:6.00, grande:10.00 } },
+      { id: 14, name:"AMY",             desc:"Mortadella I.G.P. con pistacho, crema de pistacho, stracciatella, pistacho", prices:{ mediana:7.50, grande:13.00 } },
+      { id: 15, name:"RÚSTICA",         desc:"Crema de pecorino romano D.O.P., pancetta enrollada, rúcula, tomate seco", prices:{ mediana:6.00, grande:10.00 } },
     ],
   },
   {
     category: "SPECIAL",
     items: [
-      { id: 16,
-        name:"BURRATA",
-        desc:"Mortadella I.G.P. con pistacho, burrata fresca, pistacho troceado",
-        prices:{ mediana:6.50, grande:11.00 }
-      },
-      { id: 17,
-        name:"BURRATA TOP",
-        desc:"Jamón serrano italiano, crema de trufa, burrata fresca",
-        prices:{ mediana:7.00, grande:12.00 }
-      },
-      { id: 18,
-        name:"SPECK TORRE",
-        desc:"Speck, scamorza ahumada, crema de trufa, burrata fresca",
-        prices:{ mediana:7.50, grande:13.00 }
-      },
-      { id: 19,
-        name:"PISTACCHIELLA",
-        desc:"Mortadella I.G.P. con pistacho, tomate seco, queso gorgonzola, crema de pistacho",
-        prices:{ mediana:6.50, grande:11.00 }
-      },
-      { id: 20,
-        name:"SUPREMA",
-        desc:"Salami finocchiona, crema de alcachofas, berenjenas al horno, scamorza ahumada",
-        prices:{ mediana:7.00, grande:12.00 }
-      },
-      { id: 21,
-        name:"BEA",
-        desc:"Bresaola, mozzarella fresca, crema de setas, rúcula",
-        prices:{ mediana:7.50, grande:13.00 }
-      },
-      { id: 22,
-        name:"TRICOLORE",
-        desc:"Salami spianata picante, queso stracciatella, rúcula",
-        prices:{ mediana:7.00, grande:12.00 }
-      },
-      { id: 23,
-        name:"PRIMAVERA",
-        desc:"Jamón serrano italiano, pesto de albahaca, mozzarella fresca, tomate seco",
-        prices:{ mediana:6.50, grande:11.00 }
-      },
+      { id: 16, name:"BURRATA",       desc:"Mortadella I.G.P. con pistacho, burrata fresca, pistacho troceado",        prices:{ mediana:6.50, grande:11.00 } },
+      { id: 17, name:"BURRATA TOP",   desc:"Jamón serrano italiano, crema de trufa, burrata fresca",                   prices:{ mediana:7.00, grande:12.00 } },
+      { id: 18, name:"SPECK TORRE",   desc:"Speck, scamorza ahumada, crema de trufa, burrata fresca",                  prices:{ mediana:7.50, grande:13.00 } },
+      { id: 19, name:"PISTACCHIELLA", desc:"Mortadella I.G.P. con pistacho, tomate seco, gorgonzola, crema de pistacho", prices:{ mediana:6.50, grande:11.00 } },
+      { id: 20, name:"SUPREMA",       desc:"Salami finocchiona, crema de alcachofas, berenjenas al horno, scamorza",   prices:{ mediana:7.00, grande:12.00 } },
+      { id: 21, name:"BEA",           desc:"Bresaola, mozzarella fresca, crema de setas, rúcula",                      prices:{ mediana:7.50, grande:13.00 } },
+      { id: 22, name:"TRICOLORE",     desc:"Spianata picante, stracciatella, rúcula",                                  prices:{ mediana:7.00, grande:12.00 } },
+      { id: 23, name:"PRIMAVERA",     desc:"Jamón serrano italiano, pesto de albahaca, mozzarella fresca, tomate seco", prices:{ mediana:6.50, grande:11.00 } },
     ],
   },
   {
@@ -247,38 +162,36 @@ const $  = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 const fmt = (n) => `€${Number(n).toFixed(2).replace('.', ',')}`;
 
-// Localizzatore: accetta stringhe o oggetti {es,it,en}
-const L = (val) => {
-  if (typeof val === 'string') return val;
-  if (val && typeof val === 'object') {
-    return val[lang] || val.es || Object.values(val)[0] || '';
-  }
-  return '';
-};
-
+// Localizador: acepta cadenas o objetos {es: "..."}
+function t(key){ return TS[key] || key; }
 const lang = 'es';
 document.documentElement.lang = 'es';
+function L(val){
+  if (typeof val === 'string') return val;
+  if (val && typeof val === 'object') return val.es || Object.values(val)[0] || '';
+  return '';
+}
 
 const state = {
   cart: [],            // {id, name, size?, price, qty}
-  selected: null,      // prodotto in modale
+  selected: null,      // producto en modal
   selectedSize: null,  // "mediana" | "grande" | null
 };
 
 /* =========================
-   Elementi DOM
+   Elementos DOM
 ========================= */
-const productGrid = $('#productGrid');
-const cartBtn     = $('#cartBtn');
-const cartPanel   = $('#cartPanel');
-const closeCartBtn= $('#closeCart');
-const cartList    = $('#cartList');
-const cartCount   = $('#cartCount');
-const grandTotal  = $('#grandTotal');
-const orderSummary = $('#orderSummary'); // riepilogo prodotti in fondo
-const orderForm   = $('#orderForm');
-const formMsg     = $('#formMsg');
-const submitBtn   = $('#submitBtn'); // bottone invio ordine
+const productGrid  = $('#productGrid');
+const cartBtn      = $('#cartBtn');
+const cartPanel    = $('#cartPanel');
+const closeCartBtn = $('#closeCart');
+const cartList     = $('#cartList');
+const cartCount    = $('#cartCount');
+const grandTotal   = $('#grandTotal');
+const orderSummary = $('#orderSummary'); // resumen de productos al final del formulario
+const orderForm    = $('#orderForm');
+const formMsg      = $('#formMsg');
+const submitBtn    = $('#submitBtn'); // botón de envío
 
 // Modal
 const modal         = $('#modal');
@@ -295,6 +208,16 @@ function showToast(msg){
   toast.textContent = msg;
   toast.classList.add('show');
   setTimeout(()=>toast.classList.remove('show'), 2200);
+}
+
+/* =========================
+   Textos estáticos + banner mínimo
+========================= */
+function updateStaticTexts(){
+  document.documentElement.lang = 'es';
+  const opt = document.querySelector('#payment option[value=""]');
+  if (opt) opt.textContent = TS.selectPayment;
+  ensureMinBanner();
 }
 
 /* =========================
